@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Valyria.Api.Stats\Api.csproj", "{9716C79C-4EF3-4770-8BBE-47430BE45EFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9716C79C-4EF3-4770-8BBE-47430BE45EFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9716C79C-4EF3-4770-8BBE-47430BE45EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9716C79C-4EF3-4770-8BBE-47430BE45EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9716C79C-4EF3-4770-8BBE-47430BE45EFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {588D21A8-6D60-41D5-AC67-5AEC159D9900}
+	EndGlobalSection
+EndGlobal
