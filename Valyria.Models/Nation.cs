@@ -6,8 +6,8 @@ namespace Valyria.Models
     public class Nation
     {
         public int Id { get; set; }
+        public string Name { get; set; }
         public string RulerName { get; set; }
-        public string NationName { get; set; }
         public Alliance? Alliance { get; set; }
         public DateTime? AllianceDate { get; set; }
         public string AllianceStatus { get; set; }
