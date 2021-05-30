@@ -1,4 +1,5 @@
-﻿using GraphQL;
+﻿using AutoMapper;
+using GraphQL;
 using GraphQL.Types;
 using Repository;
 using System.Threading.Tasks;
@@ -39,8 +40,21 @@ namespace Api.GraphQL.Types
             Field(n => n.CruiseMissiles).Description("The amount of cruise missiles that the nation is currently holding");
             Field(n => n.Nukes).Description("The amount of nuclear missiles that the nation is currently holding");
             Field<RecentActivityEnum>(nameof(Nation.RecentActivity), "A rough measure of how recently the player logged into their nation");
+            Field<DateTimeGraphType>(nameof(Nation.UpdatedOn), "The date and time that this state of the nation was recorded");
+            Field<ListGraphType<NationType>>(
+                "auditHistory",
+                "All recorded historical audit entries for the nation. Entries are only recorded if an actual change in the data occurred",
+                new QueryArguments(
+                    new QueryArgument<DateTimeGraphType> { Name = "entryRecordedBefore", Description = "A \"lower bound\" of timestamps after which audits must have been recorded. Defaults to the beginning of time" },
+                    new QueryArgument<DateTimeGraphType> { Name = "entryRecordedAfter", Description = "An \"upper bound\" of timestamps before which audits must have been recorded. Defaults to right now" },
+                    new QueryArgument<IntGraphType> { Name = "limit", Description = "The number of audit records to return, at most. Defaults to 100" },
+                    new QueryArgument<IntGraphType> { Name = "offset", Description = "The number of audit records to skip before beginning to return results. Defaults to 0" }),
+                GetNationAuditHistory);
         }
 
-        private object GetAllianceByNation(IResolveFieldContext<Nation> context) => _cnDbRepository.Alliances.GetByNation(context.Source.Id);
+        private object GetAllianceByNation(IResolveFieldContext<Nation> context) 
+            => context.Source.Alliance is null ? null : _cnDbRepository.Alliances.Get(context.Source.Alliance.Id);
+
+        private object GetNationAuditHistory(IResolveFieldContext<Nation> context) => _cnDbRepository.Nations.GetAuditHistory(context.Source.Id);
     }
 }

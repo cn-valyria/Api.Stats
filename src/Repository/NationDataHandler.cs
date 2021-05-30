@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Valyria.Models;
 using AutoMapper;
+using System.Linq;
 
 namespace Repository
 {
@@ -12,13 +13,16 @@ namespace Repository
     {
         private readonly IMapper _mapper;
         private readonly IQueryHandler<DbNation> _nationQueryHandler;
+        private readonly IAuditQueryHandler<DbNation> _nationAuditQueryHandler;
 
         public NationDataHandler(
             IMapper mapper,
-            IQueryHandler<DbNation> nationQueryHandler)
+            IQueryHandler<DbNation> nationQueryHandler,
+            IAuditQueryHandler<DbNation> auditQueryHandler)
         {
             _mapper = mapper;
             _nationQueryHandler = nationQueryHandler;
+            _nationAuditQueryHandler = auditQueryHandler;
         }
 
         public async Task<Nation?> Get(int id)
@@ -27,9 +31,10 @@ namespace Repository
             return nation is null ? null : _mapper.Map<Nation>(nation);
         }
 
-        public Task<List<(Nation, DateTime)>> GetAuditHistory(int id)
+        public async Task<List<Nation>> GetAuditHistory(int id)
         {
-            throw new NotImplementedException();
+            var auditData = await _nationAuditQueryHandler.QueryAuditData(id);
+            return auditData.Select(_mapper.Map<Nation>).ToList();
         }
 
         public Task<List<Nation>> Search(string filter, int? limit = null, int? offset = null)

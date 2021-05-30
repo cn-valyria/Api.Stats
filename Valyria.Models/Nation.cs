@@ -27,5 +27,6 @@ namespace Valyria.Models
         public int CruiseMissiles { get; set; }
         public int Nukes { get; set; }
         public RecentActivity RecentActivity { get; set; }
+        public DateTime? UpdatedOn { get; set; }
     }
 }

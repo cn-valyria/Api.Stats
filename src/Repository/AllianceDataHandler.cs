@@ -34,7 +34,7 @@ namespace Repository
             return alliance is null ? null : _mapper.Map<Alliance>(alliance);
         }
 
-        public Task<List<(Alliance, DateTime)>> GetAuditHistory(int id)
+        public Task<List<Alliance>> GetAuditHistory(int id)
         {
             throw new NotImplementedException();
         }

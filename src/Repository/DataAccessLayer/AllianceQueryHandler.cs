@@ -37,10 +37,11 @@ select 	id as AllianceId,
         aircraft as Aircraft,
         navy as Navy,
         anarchy as Anarchy
-from 	alliance";
+from 	alliance
+where   id = @alliance_id";
 
             using var sqlConnection = new MySqlConnection(_connectionString);
-            return await sqlConnection.QueryFirstOrDefaultAsync<Alliance>(query, new { id });
+            return await sqlConnection.QueryFirstOrDefaultAsync<Alliance>(query, new { alliance_id = id });
         }
 
         public async Task<Alliance?> Query(ReferenceQueryRequest referenceQueryRequest)

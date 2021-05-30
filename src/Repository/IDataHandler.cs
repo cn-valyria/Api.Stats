@@ -22,6 +22,6 @@ namespace Repository
         /// <returns>
         /// A representation of the entity at the time the audit change was recorded, along with the timestamp that the change was recorded.
         /// </returns>
-        Task<List<(T, DateTime)>> GetAuditHistory(int id);
+        Task<List<T>> GetAuditHistory(int id);
     }
 }

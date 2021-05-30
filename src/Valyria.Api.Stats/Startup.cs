@@ -44,6 +44,7 @@ namespace Api
                 .AddSingleton<IQueryHandler<DbNation>>(nationQueryHandler)
                 .AddSingleton<IQueryHandler<DbAlliance>>(allianceQueryHandler)
                 .AddSingleton<IReferenceQueryHandler<DbAlliance>>(allianceQueryHandler)
+                .AddSingleton<IAuditQueryHandler<DbNation>>(nationQueryHandler)
                 .AddSingleton<INationDataHandler, NationDataHandler>()
                 .AddSingleton<IAllianceDataHelper, AllianceDataHandler>()
                 .AddSingleton<ICnDbRepository, CnDbRepository>();

@@ -11,7 +11,8 @@ namespace Api
         {
             CreateMap<DbNation, Nation>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.NationId))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.NationName));
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.NationName))
+                .ForMember(dest => dest.Alliance, opt => opt.MapFrom(src => src.AllianceId.HasValue ? new Alliance { Id = src.AllianceId.Value } : null));
 
             CreateMap<DbAlliance, Alliance>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AllianceId))
