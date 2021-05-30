@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valyria.Models", "Valyria.Models\Valyria.Models.csproj", "{837A648F-4632-4F27-9FE2-AB19B7294C50}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "src\Valyria.Api.Stats\Api.csproj", "{286794A0-CEF3-4D5E-84C1-EF7DA8791923}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "src\Api\Api.csproj", "{286794A0-CEF3-4D5E-84C1-EF7DA8791923}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "src\Repository\Repository.csproj", "{B390B2D7-86A3-4910-9ED0-5E844BCCF467}"
 EndProject
