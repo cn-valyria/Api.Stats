@@ -10,20 +10,20 @@ namespace Valyria.Models
         public int TotalNations { get; set; }
         public int ActiveNations { get; set; }
         public int PercentActive { get; set; }
-        public int Strength { get; set; }
+        public int TotalStrength { get; set; }
         public int AverageStrength { get; set; }
         public decimal Score { get; set; }
-        public int Land { get; set; }
-        public int Infrastructure { get; set; }
-        public int Technology { get; set; }
-        public int War { get; set; }
-        public int Peace { get; set; }
-        public int Soldiers { get; set; }
-        public int Tanks { get; set; }
-        public int Cruise { get; set; }
-        public int Nukes { get; set; }
-        public int Aircraft { get; set; }
-        public int Navy { get; set; }
-        public int Anarchy { get; set; }
+        public int TotalLand { get; set; }
+        public int TotalInfrastructure { get; set; }
+        public int TotalTechnology { get; set; }
+        public int NationsAtWar { get; set; }
+        public int NationsAtPeace { get; set; }
+        public int TotalSoldiers { get; set; }
+        public int TotalTanks { get; set; }
+        public int TotalCruiseMissiles { get; set; }
+        public int TotalNuclearWeapons { get; set; }
+        public int TotalAircraft { get; set; }
+        public int TotalNavy { get; set; }
+        public int TotalNationsInAnarchy { get; set; }
     }
 }

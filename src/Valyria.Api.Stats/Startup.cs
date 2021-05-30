@@ -9,7 +9,8 @@ using Api.GraphQL.Types;
 using GraphQL.NewtonsoftJson;
 using Microsoft.Extensions.Configuration;
 using Repository.DataAccessLayer;
-using DbNation = Repository.DataAccessLayer.Entities.Nation;
+using DbNation = Repository.DataAccessLayer.DTO.Nation;
+using DbAlliance = Repository.DataAccessLayer.DTO.Alliance;
 using Valyria.Models;
 using Repository;
 
@@ -35,10 +36,18 @@ namespace Api
     public static class StartupExtensions
     {
         public static IServiceCollection AddCnDbRepository(this IServiceCollection services, IConfiguration configuration)
-            => services
-                .AddSingleton<IQueryHandler<DbNation>>(new NationQueryHandler(configuration.GetConnectionString("CnDb")))
-                .AddSingleton<IDataHandler<Nation>, NationDataHandler>()
+        {
+            var nationQueryHandler = new NationQueryHandler(configuration.GetConnectionString("CnDb"));
+            var allianceQueryHandler = new AllianceQueryHandler(configuration.GetConnectionString("CnDb"));
+
+            return services
+                .AddSingleton<IQueryHandler<DbNation>>(nationQueryHandler)
+                .AddSingleton<IQueryHandler<DbAlliance>>(allianceQueryHandler)
+                .AddSingleton<IReferenceQueryHandler<DbAlliance>>(allianceQueryHandler)
+                .AddSingleton<INationDataHandler, NationDataHandler>()
+                .AddSingleton<IAllianceDataHelper, AllianceDataHandler>()
                 .AddSingleton<ICnDbRepository, CnDbRepository>();
+        }
 
         public static IServiceCollection AddGraphQLQuery<T>(this IServiceCollection services) where T : ObjectGraphType<object>
             => services.AddSingleton<T>();
@@ -48,6 +57,7 @@ namespace Api
 
         public static IServiceCollection AddGraphQLTypes(this IServiceCollection services) 
             => services
+                .AddSingleton<AllianceType>()
                 .AddSingleton<GovernmentTypeEnum>()
                 .AddSingleton<NationalWarStatusEnum>()
                 .AddSingleton<NationType>()

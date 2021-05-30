@@ -10,6 +10,11 @@ namespace Repository
         /// <summary>
         /// A handler that exposes access methods to all nation data currently known to our CN data repository
         /// </summary>
-        IDataHandler<Nation> Nations { get; }
+        INationDataHandler Nations { get; }
+
+        /// <summary>
+        /// A handler that exposes access methods to all bulk alliance data currently known to our CN data repository
+        /// </summary>
+        IAllianceDataHelper Alliances { get; }
     }
 }

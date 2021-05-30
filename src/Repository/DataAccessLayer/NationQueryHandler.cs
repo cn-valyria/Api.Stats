@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using MySql.Data.MySqlClient;
-using Repository.DataAccessLayer.Entities;
+using Repository.DataAccessLayer.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,7 +12,7 @@ namespace Repository.DataAccessLayer
 
         public NationQueryHandler(string connectionString) => _connectionString = connectionString;
 
-        public async Task<Nation> Query(int id)
+        public async Task<Nation?> Query(int id)
         {
             const string query = @"
 select  id as NationId,

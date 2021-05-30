@@ -7,12 +7,15 @@ namespace Repository
 {
     public class CnDbRepository : ICnDbRepository
     {
-        public IDataHandler<Nation> Nations { get; }
+        public INationDataHandler Nations { get; }
+        public IAllianceDataHelper Alliances { get; }
 
         public CnDbRepository(
-            IDataHandler<Nation> nationDataHandler)
+            INationDataHandler nationDataHandler,
+            IAllianceDataHelper allianceDataHandler)
         {
             Nations = nationDataHandler;
+            Alliances = allianceDataHandler;
         }
     }
 }

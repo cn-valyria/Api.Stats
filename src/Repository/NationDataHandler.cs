@@ -1,15 +1,14 @@
 ﻿using Repository.DataAccessLayer;
-using DbNation = Repository.DataAccessLayer.Entities.Nation;
+using DbNation = Repository.DataAccessLayer.DTO.Nation;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Valyria.Models;
 using AutoMapper;
 
 namespace Repository
 {
-    public class NationDataHandler : IDataHandler<Nation>
+    public class NationDataHandler : INationDataHandler
     {
         private readonly IMapper _mapper;
         private readonly IQueryHandler<DbNation> _nationQueryHandler;
@@ -34,6 +33,11 @@ namespace Repository
         }
 
         public Task<List<Nation>> Search(string filter, int? limit = null, int? offset = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Nation>> GetByAlliance(int? allianceId, string allianceName)
         {
             throw new NotImplementedException();
         }

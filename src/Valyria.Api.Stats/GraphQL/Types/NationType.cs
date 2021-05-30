@@ -1,18 +1,26 @@
-﻿using GraphQL.Types;
+﻿using GraphQL;
+using GraphQL.Types;
+using Repository;
+using System.Threading.Tasks;
 using Valyria.Models;
 
 namespace Api.GraphQL.Types
 {
     public class NationType : ObjectGraphType<Nation>
     {
-        public NationType()
+        private readonly ICnDbRepository _cnDbRepository;
+
+        public NationType(ICnDbRepository cnDbRepository)
         {
+            _cnDbRepository = cnDbRepository;
+
             Name = "Nation";
             Description = "An individual nation. The core entity in Cybernations, and the thing that someone plays as.";
 
             Field(n => n.Id).Description("The Nation ID");
             Field(n => n.Name).Description("The name of the nation");
             Field(n => n.RulerName).Description("The name of the nation's ruler");
+            Field<AllianceType>(nameof(Nation.Alliance), "The alliance that the nation is affiliated with", resolve: GetAllianceByNation);
             Field<DateTimeGraphType>(nameof(Nation.AllianceDate), "The date that the nation last changed its alliance affiliation");
             Field(n => n.AllianceStatus).Description("The status of the nation within its alliance");
             Field<GovernmentTypeEnum>(nameof(Nation.GovernmentType), "The nation's selected government type");
@@ -32,5 +40,7 @@ namespace Api.GraphQL.Types
             Field(n => n.Nukes).Description("The amount of nuclear missiles that the nation is currently holding");
             Field<RecentActivityEnum>(nameof(Nation.RecentActivity), "A rough measure of how recently the player logged into their nation");
         }
+
+        private object GetAllianceByNation(IResolveFieldContext<Nation> context) => _cnDbRepository.Alliances.GetByNation(context.Source.Id);
     }
 }

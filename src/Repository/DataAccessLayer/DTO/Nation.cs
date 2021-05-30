@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Valyria.Models.Enums;
 
-namespace Repository.DataAccessLayer.Entities
+namespace Repository.DataAccessLayer.DTO
 {
     public class Nation
     {

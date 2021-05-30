@@ -19,12 +19,12 @@ namespace Api.GraphQL
 
             Name = "Query";
 
-            Field<NationType>("nation", arguments: new QueryArguments(new QueryArgument<IdGraphType> { Name = "id" }), resolve: QueryNationById);
+            Field<NationType>("getNation", arguments: new QueryArguments(new QueryArgument<IdGraphType> { Name = "nationId" }), resolve: QueryNationById);
         }
 
         public object QueryNationById(IResolveFieldContext<object> context)
         {
-            var id = context.GetArgument<int?>("id");
+            var id = context.GetArgument<int?>("nationId");
             return id.HasValue ? _cnDbRepository.Nations.Get(id.Value) : Task.FromResult<Nation>(null);
         }
     }
