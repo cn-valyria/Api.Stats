@@ -31,6 +31,12 @@ namespace Repository
             return nation is null ? null : _mapper.Map<Nation>(nation);
         }
 
+        public async Task<List<Nation>> Get(IEnumerable<int> ids)
+        {
+            var allNations = await _nationQueryHandler.Query(ids);
+            return allNations.Select(_mapper.Map<Nation>).ToList();
+        }
+
         public async Task<List<Nation>> GetAuditHistory(int id)
         {
             var auditData = await _nationAuditQueryHandler.QueryAuditData(id);

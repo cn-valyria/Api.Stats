@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Valyria.Models;
 using Repository.DataAccessLayer.QueryHelpers;
+using System.Linq;
 
 namespace Repository
 {
@@ -26,6 +27,12 @@ namespace Repository
         {
             var alliance = await _allianceQueryHandler.Query(id);
             return alliance is null ? null : _mapper.Map<Alliance>(alliance);
+        }
+
+        public async Task<List<Alliance>> Get(IEnumerable<int> ids)
+        {
+            var allAlliances = await _allianceQueryHandler.Query(ids);
+            return allAlliances.Select(_mapper.Map<Alliance>).ToList();
         }
 
         public async Task<Alliance?> GetByNation(int nationId)

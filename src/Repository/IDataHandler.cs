@@ -12,6 +12,11 @@ namespace Repository
         Task<T?> Get(int id);
 
         /// <summary>
+        /// Get all known instances of the entity by a list of their IDs.
+        /// </summary>
+        Task<List<T>> Get(IEnumerable<int> ids);
+
+        /// <summary>
         /// Search for any instances of the entity by fuzzy-matching against a filter string. Includes limit and offset for pagination.
         /// </summary>
         Task<List<T>> Search(string filter, int? limit = null, int? offset = null);

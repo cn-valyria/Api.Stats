@@ -13,6 +13,7 @@ using DbNation = Repository.DataAccessLayer.DTO.Nation;
 using DbAlliance = Repository.DataAccessLayer.DTO.Alliance;
 using Valyria.Models;
 using Repository;
+using GraphQL.DataLoader;
 
 [assembly: FunctionsStartup(typeof(Api.Startup))]
 
@@ -29,7 +30,7 @@ namespace Api
                 .AddGraphQLTypes()
                 .AddGraphQLSchema<CybernationsSchema>()
                 .AddGraphQLDocumentTypes()
-                .AddGraphQL();
+                .AddGraphQL().AddDataLoader();
         }
     }
 
@@ -56,7 +57,7 @@ namespace Api
         public static IServiceCollection AddGraphQLSchema<T>(this IServiceCollection services) where T : Schema
             => services.AddSingleton<ISchema, T>();
 
-        public static IServiceCollection AddGraphQLTypes(this IServiceCollection services) 
+        public static IServiceCollection AddGraphQLTypes(this IServiceCollection services)
             => services
                 .AddSingleton<AllianceType>()
                 .AddSingleton<GovernmentTypeEnum>()

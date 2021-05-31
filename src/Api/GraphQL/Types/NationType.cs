@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using GraphQL;
+using GraphQL.DataLoader;
 using GraphQL.Types;
 using Repository;
+using System.Linq;
 using System.Threading.Tasks;
 using Valyria.Models;
 
@@ -9,11 +11,13 @@ namespace Api.GraphQL.Types
 {
     public class NationType : ObjectGraphType<Nation>
     {
+        private readonly IDataLoaderContextAccessor _dataLoaderContextAccessor;
         private readonly ICnDbRepository _cnDbRepository;
 
-        public NationType(ICnDbRepository cnDbRepository)
+        public NationType(ICnDbRepository cnDbRepository, IDataLoaderContextAccessor dataLoaderContextAccessor)
         {
             _cnDbRepository = cnDbRepository;
+            _dataLoaderContextAccessor = dataLoaderContextAccessor;
 
             Name = "Nation";
             Description = "An individual nation. The core entity in Cybernations, and the thing that someone plays as.";
@@ -52,8 +56,17 @@ namespace Api.GraphQL.Types
                 GetNationAuditHistory);
         }
 
-        private object GetAllianceByNation(IResolveFieldContext<Nation> context) 
-            => context.Source.Alliance is null ? null : _cnDbRepository.Alliances.Get(context.Source.Alliance.Id);
+        private object GetAllianceByNation(IResolveFieldContext<Nation> context)
+        //=> context.Source.Alliance is null ? null : _cnDbRepository.Alliances.Get(context.Source.Alliance.Id);
+        {
+            var dataLoader = _dataLoaderContextAccessor.Context.GetOrAddBatchLoader<int, Alliance>("GetAlliancesByIds", async allianceIds =>
+            {
+                var allAlliances = await _cnDbRepository.Alliances.Get(allianceIds);
+                return allAlliances.ToDictionary(alliance => alliance.Id, alliance => alliance);
+            });
+
+            return dataLoader.LoadAsync(context.Source.Alliance?.Id ?? 0);
+        }
 
         private object GetNationAuditHistory(IResolveFieldContext<Nation> context) => _cnDbRepository.Nations.GetAuditHistory(context.Source.Id);
     }
