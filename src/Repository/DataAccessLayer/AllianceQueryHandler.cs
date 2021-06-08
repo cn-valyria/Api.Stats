@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using Repository.DataAccessLayer.DTO;
 using Repository.DataAccessLayer.QueryHelpers;
+using Repository.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -112,7 +113,7 @@ where	nation.id = @nation_id";
             return await sqlConnection.QueryFirstOrDefaultAsync<Alliance>(query, new { nation_id = referenceQueryRequest.NationId });
         }
 
-        public Task<IEnumerable<Alliance>> Query(string filter, int limit, int offset)
+        public Task<IEnumerable<Alliance>> Query(SearchFilter filter, int limit, int offset)
         {
             throw new System.NotImplementedException();
         }

@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using MySql.Data.MySqlClient;
 using Repository.DataAccessLayer.DTO;
+using Repository.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace Repository.DataAccessLayer
@@ -79,9 +81,24 @@ where   id in @ids";
             return await sqlConnection.QueryAsync<Nation>(query, new { ids });
         }
 
-        public Task<IEnumerable<Nation>> Query(string filter, int limit, int offset)
+        public async Task<IEnumerable<Nation>> Query(SearchFilter filter, int limit, int offset)
         {
-            throw new NotImplementedException();
+            using var sqlConnection = new MySqlConnection(_connectionString);
+
+            // Call the main proc to execute the search
+            await sqlConnection.ExecuteAsync("search_nations", new
+            {
+                _nation_name = filter.NationName,
+                _ruler_name = filter.RulerName,
+                _alliance_name = filter.AllianceName,
+                _nation_strength_lower_bound = filter.NationStrengthLowerBound,
+                _nation_strength_upper_bound = filter.NationStrengthUpperBound,
+                _match_type = (int)(filter.Match ?? FilterMatchType.Any)
+            }, commandType: CommandType.StoredProcedure);
+
+            // Grab the data in the temp table that the proc should have populated and return that
+            const string query = "select * from tmpNationSearchResults limit @offset, @limit";
+            return await sqlConnection.QueryAsync<Nation>(query, new { limit, offset });
         }
 
         public async Task<IEnumerable<Nation>> QueryAuditData(

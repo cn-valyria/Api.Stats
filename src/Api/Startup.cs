@@ -14,6 +14,7 @@ using DbAlliance = Repository.DataAccessLayer.DTO.Alliance;
 using Valyria.Models;
 using Repository;
 using GraphQL.DataLoader;
+using Api.GraphQL.Types.Input;
 
 [assembly: FunctionsStartup(typeof(Api.Startup))]
 
@@ -59,6 +60,8 @@ namespace Api
 
         public static IServiceCollection AddGraphQLTypes(this IServiceCollection services)
             => services
+                .AddSingleton<MatchTypeEnum>()
+                .AddSingleton<FilterInputType>()
                 .AddSingleton<AllianceType>()
                 .AddSingleton<GovernmentTypeEnum>()
                 .AddSingleton<NationalWarStatusEnum>()

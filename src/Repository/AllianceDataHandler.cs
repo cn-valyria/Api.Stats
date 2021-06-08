@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Valyria.Models;
 using Repository.DataAccessLayer.QueryHelpers;
 using System.Linq;
+using Repository.Models;
 
 namespace Repository
 {
@@ -46,7 +47,7 @@ namespace Repository
             throw new NotImplementedException();
         }
 
-        public Task<List<Alliance>> Search(string filter, int? limit = null, int? offset = null)
+        public Task<List<Alliance>> Search(SearchFilter filter, int? limit = null, int? offset = null)
         {
             throw new NotImplementedException();
         }
