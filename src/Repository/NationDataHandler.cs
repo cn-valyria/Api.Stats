@@ -44,10 +44,14 @@ namespace Repository
             return auditData.Select(_mapper.Map<Nation>).ToList();
         }
 
-        public async Task<List<Nation>> Search(SearchFilter filter, int? limit = null, int? offset = null)
+        public async Task<SearchResult<Nation>> Search(SearchFilter filter, int? limit = null, int? offset = null)
         {
-            var searchResults = await _nationQueryHandler.Query(filter, limit ?? 100, offset ?? 0);
-            return searchResults.Select(_mapper.Map<Nation>).ToList();
+            var (totalCount, searchResults) = await _nationQueryHandler.Query(filter, limit ?? 100, offset ?? 0);
+            return new SearchResult<Nation>
+            {
+                TotalCount = totalCount,
+                Results = searchResults.Select(_mapper.Map<Nation>).ToList()
+            };
         }
 
         public Task<IEnumerable<Nation>> GetByAlliance(int? allianceId, string allianceName)

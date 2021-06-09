@@ -2,7 +2,6 @@
 using GraphQL;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
 using GraphQL.Types;
 using Api.GraphQL;
 using Api.GraphQL.Types;
@@ -11,9 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Repository.DataAccessLayer;
 using DbNation = Repository.DataAccessLayer.DTO.Nation;
 using DbAlliance = Repository.DataAccessLayer.DTO.Alliance;
-using Valyria.Models;
 using Repository;
-using GraphQL.DataLoader;
 using Api.GraphQL.Types.Input;
 
 [assembly: FunctionsStartup(typeof(Api.Startup))]
@@ -27,11 +24,11 @@ namespace Api
             builder.Services
                 .AddAutoMapper(typeof(Startup))
                 .AddCnDbRepository(builder.GetContext().Configuration)
-                .AddGraphQLQuery<CybernationsQuery>()
-                .AddGraphQLTypes()
                 .AddGraphQLSchema<CybernationsSchema>()
                 .AddGraphQLDocumentTypes()
-                .AddGraphQL().AddDataLoader();
+                .AddGraphQL()
+                    .AddDataLoader()
+                    .AddGraphTypes();
         }
     }
 
@@ -52,23 +49,8 @@ namespace Api
                 .AddSingleton<ICnDbRepository, CnDbRepository>();
         }
 
-        public static IServiceCollection AddGraphQLQuery<T>(this IServiceCollection services) where T : ObjectGraphType<object>
-            => services.AddSingleton<T>();
-
         public static IServiceCollection AddGraphQLSchema<T>(this IServiceCollection services) where T : Schema
             => services.AddSingleton<ISchema, T>();
-
-        public static IServiceCollection AddGraphQLTypes(this IServiceCollection services)
-            => services
-                .AddSingleton<MatchTypeEnum>()
-                .AddSingleton<FilterInputType>()
-                .AddSingleton<AllianceType>()
-                .AddSingleton<GovernmentTypeEnum>()
-                .AddSingleton<NationalWarStatusEnum>()
-                .AddSingleton<NationType>()
-                .AddSingleton<RecentActivityEnum>()
-                .AddSingleton<ReligionEnum>()
-                .AddSingleton<TeamEnum>();
 
         public static IServiceCollection AddGraphQLDocumentTypes(this IServiceCollection services)
             => services

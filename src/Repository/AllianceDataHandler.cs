@@ -47,7 +47,7 @@ namespace Repository
             throw new NotImplementedException();
         }
 
-        public Task<List<Alliance>> Search(SearchFilter filter, int? limit = null, int? offset = null)
+        public Task<SearchResult<Alliance>> Search(SearchFilter filter, int? limit = null, int? offset = null)
         {
             throw new NotImplementedException();
         }

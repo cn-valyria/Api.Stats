@@ -113,7 +113,7 @@ where	nation.id = @nation_id";
             return await sqlConnection.QueryFirstOrDefaultAsync<Alliance>(query, new { nation_id = referenceQueryRequest.NationId });
         }
 
-        public Task<IEnumerable<Alliance>> Query(SearchFilter filter, int limit, int offset)
+        public Task<(int, IEnumerable<Alliance>)> Query(SearchFilter filter, int limit, int offset)
         {
             throw new System.NotImplementedException();
         }

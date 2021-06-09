@@ -81,7 +81,7 @@ where   id in @ids";
             return await sqlConnection.QueryAsync<Nation>(query, new { ids });
         }
 
-        public async Task<IEnumerable<Nation>> Query(SearchFilter filter, int limit, int offset)
+        public async Task<(int, IEnumerable<Nation>)> Query(SearchFilter filter, int limit, int offset)
         {
             using var sqlConnection = new MySqlConnection(_connectionString);
 
@@ -96,9 +96,15 @@ where   id in @ids";
                 _match_type = (int)(filter.Match ?? FilterMatchType.Any)
             }, commandType: CommandType.StoredProcedure);
 
+            // Count all data that could be returned from the search results
+            const string totalCountQuery = "select count(1) from tmpNationSearchResults";
+            var totalCount = await sqlConnection.QueryFirstAsync<int>(totalCountQuery);
+
             // Grab the data in the temp table that the proc should have populated and return that
-            const string query = "select * from tmpNationSearchResults limit @offset, @limit";
-            return await sqlConnection.QueryAsync<Nation>(query, new { limit, offset });
+            const string resultsQuery = "select * from tmpNationSearchResults limit @offset, @limit";
+            var searchResults = await sqlConnection.QueryAsync<Nation>(resultsQuery, new { limit, offset });
+
+            return (totalCount, searchResults);
         }
 
         public async Task<IEnumerable<Nation>> QueryAuditData(

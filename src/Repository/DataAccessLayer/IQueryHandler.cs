@@ -20,6 +20,6 @@ namespace Repository.DataAccessLayer
         /// <summary>
         /// Query for a list of entities by fuzzy-matching text fields. Includes limit and offset for pagination purposes.
         /// </summary>
-        Task<IEnumerable<T>> Query(SearchFilter filter, int limit, int offset);
+        Task<(int, IEnumerable<T>)> Query(SearchFilter filter, int limit, int offset);
     }
 }

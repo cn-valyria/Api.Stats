@@ -20,7 +20,7 @@ namespace Repository
         /// <summary>
         /// Search for any instances of the entity by fuzzy-matching against a filter string. Includes limit and offset for pagination.
         /// </summary>
-        Task<List<T>> Search(SearchFilter filter, int? limit = null, int? offset = null);
+        Task<SearchResult<T>> Search(SearchFilter filter, int? limit = null, int? offset = null);
 
         /// <summary>
         /// Returns the audit history stored for the entity by its ID.

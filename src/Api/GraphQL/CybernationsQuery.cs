@@ -4,7 +4,6 @@ using GraphQL;
 using GraphQL.Types;
 using Repository;
 using Repository.Models;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Valyria.Models;
 
@@ -21,7 +20,7 @@ namespace Api.GraphQL
             Name = "Query";
 
             Field<NationType>("getNation", arguments: new QueryArguments(new QueryArgument<IdGraphType> { Name = "nationId" }), resolve: QueryNationById);
-            Field<ListGraphType<NationType>>(
+            Field<NationSearchResultsType>(
                 "searchNations",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<FilterInputType>> { Name = "filter" },
