@@ -1,4 +1,4 @@
-﻿using Repository.DataAccessLayer.DTO;
+﻿using Repository.DataAccessLayer.QueryHelpers;
 using Repository.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,6 +20,6 @@ namespace Repository.DataAccessLayer
         /// <summary>
         /// Query for a list of entities by fuzzy-matching text fields. Includes limit and offset for pagination purposes.
         /// </summary>
-        Task<(int, IEnumerable<T>)> Query(SearchFilter filter, int limit, int offset);
+        Task<(int, IEnumerable<T>)> Query(SearchFilter filter, IEnumerable<OrderByClause> orderBy, int limit, int offset);
     }
 }

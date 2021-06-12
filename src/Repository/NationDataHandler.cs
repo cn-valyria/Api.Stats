@@ -7,6 +7,7 @@ using Valyria.Models;
 using AutoMapper;
 using System.Linq;
 using Repository.Models;
+using Repository.DataAccessLayer.QueryHelpers;
 
 namespace Repository
 {
@@ -44,9 +45,13 @@ namespace Repository
             return auditData.Select(_mapper.Map<Nation>).ToList();
         }
 
-        public async Task<SearchResult<Nation>> Search(SearchFilter filter, int? limit = null, int? offset = null)
+        public async Task<SearchResult<Nation>> Search(SearchFilter filter, Dictionary<string, object> orderBy, int? limit = null, int? offset = null)
         {
-            var (totalCount, searchResults) = await _nationQueryHandler.Query(filter, limit ?? 100, offset ?? 0);
+            var dataOrderBy = orderBy?.Keys.Select(key => new OrderByClause(key, orderBy[key])).ToList() ?? new List<OrderByClause>();
+            if (!dataOrderBy.Any())
+                dataOrderBy.Add(OrderByClause.DefaultNationOrderBy);
+
+            var (totalCount, searchResults) = await _nationQueryHandler.Query(filter, dataOrderBy, limit ?? 100, offset ?? 0);
             return new SearchResult<Nation>
             {
                 TotalCount = totalCount,

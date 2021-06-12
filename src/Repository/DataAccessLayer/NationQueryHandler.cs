@@ -1,10 +1,12 @@
 ﻿using Dapper;
 using MySql.Data.MySqlClient;
 using Repository.DataAccessLayer.DTO;
+using Repository.DataAccessLayer.QueryHelpers;
 using Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repository.DataAccessLayer
@@ -81,7 +83,7 @@ where   id in @ids";
             return await sqlConnection.QueryAsync<Nation>(query, new { ids });
         }
 
-        public async Task<(int, IEnumerable<Nation>)> Query(SearchFilter filter, int limit, int offset)
+        public async Task<(int, IEnumerable<Nation>)> Query(SearchFilter filter, IEnumerable<OrderByClause> orderBy, int limit, int offset)
         {
             using var sqlConnection = new MySqlConnection(_connectionString);
 
@@ -101,7 +103,11 @@ where   id in @ids";
             var totalCount = await sqlConnection.QueryFirstAsync<int>(totalCountQuery);
 
             // Grab the data in the temp table that the proc should have populated and return that
-            const string resultsQuery = "select * from tmpNationSearchResults limit @offset, @limit";
+            var resultsQuery = $@"
+select * 
+from tmpNationSearchResults 
+order by {string.Join(", ", orderBy.Select(clause => $"{clause.ColumnName} {clause.SortOrder}"))}
+limit @offset, @limit";
             var searchResults = await sqlConnection.QueryAsync<Nation>(resultsQuery, new { limit, offset });
 
             return (totalCount, searchResults);
