@@ -15,13 +15,16 @@ namespace Repository
     {
         private readonly IMapper _mapper;
         private readonly IQueryHandler<DbAlliance> _allianceQueryHandler;
-        private readonly IReferenceQueryHandler<DbAlliance> _allianceReferenceQueryHandler;
+        private readonly IAuditQueryHandler<DbAlliance> _allianceAuditQueryHandler;
 
-        public AllianceDataHandler(IMapper mapper, IQueryHandler<DbAlliance> allianceQueryHandler, IReferenceQueryHandler<DbAlliance> allianceReferenceHandler)
+        public AllianceDataHandler(
+            IMapper mapper, 
+            IQueryHandler<DbAlliance> allianceQueryHandler,
+            IAuditQueryHandler<DbAlliance> auditQueryHandler)
         {
             _mapper = mapper;
             _allianceQueryHandler = allianceQueryHandler;
-            _allianceReferenceQueryHandler = allianceReferenceHandler;
+            _allianceAuditQueryHandler = auditQueryHandler;
         }
 
         public async Task<Alliance?> Get(int id)
@@ -36,20 +39,24 @@ namespace Repository
             return allAlliances.Select(_mapper.Map<Alliance>).ToList();
         }
 
-        public async Task<Alliance?> GetByNation(int nationId)
+        public async Task<List<Alliance>> GetAuditHistory(int id)
         {
-            var alliance = await _allianceReferenceQueryHandler.Query(ReferenceQueryRequest.ByNationId(nationId));
-            return alliance is null ? null : _mapper.Map<Alliance>(alliance);
+            var auditData = await _allianceAuditQueryHandler.QueryAuditData(id);
+            return auditData.Select(_mapper.Map<Alliance>).ToList();
         }
 
-        public Task<List<Alliance>> GetAuditHistory(int id)
+        public async Task<SearchResult<Alliance>> Search(SearchFilter filter, Dictionary<string, object> orderBy, int? limit = null, int? offset = null)
         {
-            throw new NotImplementedException();
-        }
+            var dataOrderBy = orderBy?.Keys.Select(key => new OrderByClause(key, orderBy[key])).ToList() ?? new List<OrderByClause>();
+            if (!dataOrderBy.Any())
+                dataOrderBy.Add(OrderByClause.DefaultAllianceOrderBy);
 
-        public Task<SearchResult<Alliance>> Search(SearchFilter filter, Dictionary<string, object> orderBy, int? limit = null, int? offset = null)
-        {
-            throw new NotImplementedException();
+            var (totalCount, searchResults) = await _allianceQueryHandler.Query(filter, dataOrderBy, limit ?? 100, offset ?? 0);
+            return new SearchResult<Alliance>
+            {
+                TotalCount = totalCount,
+                Results = searchResults.Select(_mapper.Map<Alliance>).ToList()
+            };
         }
     }
 }

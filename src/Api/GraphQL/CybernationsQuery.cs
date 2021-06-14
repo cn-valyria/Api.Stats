@@ -30,6 +30,16 @@ namespace Api.GraphQL
                     new QueryArgument<IntGraphType> { Name = "limit" },
                     new QueryArgument<IntGraphType> { Name = "offset" }),
                 resolve: QueryNationsByFilter);
+
+            Field<AllianceType>("getAlliance", arguments: new QueryArguments(new QueryArgument<IdGraphType> { Name = "allianceId" }), resolve: QueryAllianceById);
+            Field<AllianceSearchResultsType>(
+                "searchAlliances",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<FilterInputType>> { Name = "filter" },
+                    new QueryArgument<AllianceOrderByInput> { Name = "orderBy" },
+                    new QueryArgument<IntGraphType> { Name = "limit" },
+                    new QueryArgument<IntGraphType> { Name = "offset" }),
+                resolve: QueryAlliancesByFilter);
         }
 
         public object QueryNationById(IResolveFieldContext<object> context)
@@ -45,6 +55,21 @@ namespace Api.GraphQL
             var limit = context.GetArgument<int?>("limit");
             var offset = context.GetArgument<int?>("offset");
             return _cnDbRepository.Nations.Search(filter, orderBy, limit, offset);
+        }
+
+        public object QueryAllianceById(IResolveFieldContext<object> context)
+        {
+            var id = context.GetArgument<int?>("allianceId");
+            return id.HasValue ? _cnDbRepository.Alliances.Get(id.Value) : Task.FromResult<Alliance>(null);
+        }
+
+        public object QueryAlliancesByFilter(IResolveFieldContext<object> context)
+        {
+            var filter = context.GetArgument<SearchFilter>("filter");
+            var orderBy = context.GetArgument<Dictionary<string, object>>("orderBy");
+            var limit = context.GetArgument<int?>("limit");
+            var offset = context.GetArgument<int?>("offset");
+            return _cnDbRepository.Alliances.Search(filter, orderBy, limit, offset);
         }
     }
 }

@@ -58,10 +58,5 @@ namespace Repository
                 Results = searchResults.Select(_mapper.Map<Nation>).ToList()
             };
         }
-
-        public Task<IEnumerable<Nation>> GetByAlliance(int? allianceId, string allianceName)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

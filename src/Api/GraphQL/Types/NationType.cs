@@ -57,7 +57,6 @@ namespace Api.GraphQL.Types
         }
 
         private object GetAllianceByNation(IResolveFieldContext<Nation> context)
-        //=> context.Source.Alliance is null ? null : _cnDbRepository.Alliances.Get(context.Source.Alliance.Id);
         {
             var dataLoader = _dataLoaderContextAccessor.Context.GetOrAddBatchLoader<int, Alliance>("GetAlliancesByIds", async allianceIds =>
             {
