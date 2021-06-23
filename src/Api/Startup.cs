@@ -4,14 +4,13 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using GraphQL.Types;
 using Api.GraphQL;
-using Api.GraphQL.Types;
 using GraphQL.NewtonsoftJson;
 using Microsoft.Extensions.Configuration;
+using Repository;
 using Repository.DataAccessLayer;
 using DbNation = Repository.DataAccessLayer.DTO.Nation;
 using DbAlliance = Repository.DataAccessLayer.DTO.Alliance;
-using Repository;
-using Api.GraphQL.Types.Input;
+using DbWar = Repository.DataAccessLayer.DTO.War;
 
 [assembly: FunctionsStartup(typeof(Api.Startup))]
 
@@ -36,16 +35,20 @@ namespace Api
     {
         public static IServiceCollection AddCnDbRepository(this IServiceCollection services, IConfiguration configuration)
         {
-            var nationQueryHandler = new NationQueryHandler(configuration.GetConnectionString("CnDb"));
-            var allianceQueryHandler = new AllianceQueryHandler(configuration.GetConnectionString("CnDb"));
+            var cnDbConnectionString = configuration.GetConnectionString("CnDb");
+            var nationQueryHandler = new NationQueryHandler(cnDbConnectionString);
+            var allianceQueryHandler = new AllianceQueryHandler(cnDbConnectionString);
+            var warQueryHandler = new WarQueryHandler(cnDbConnectionString);
 
             return services
                 .AddSingleton<IQueryHandler<DbNation>>(nationQueryHandler)
                 .AddSingleton<IQueryHandler<DbAlliance>>(allianceQueryHandler)
+                .AddSingleton<IQueryHandler<DbWar>>(warQueryHandler)
                 .AddSingleton<IAuditQueryHandler<DbNation>>(nationQueryHandler)
                 .AddSingleton<IAuditQueryHandler<DbAlliance>>(allianceQueryHandler)
                 .AddSingleton<INationDataHandler, NationDataHandler>()
                 .AddSingleton<IAllianceDataHelper, AllianceDataHandler>()
+                .AddSingleton<IWarDataHandler, WarDataHandler>()
                 .AddSingleton<ICnDbRepository, CnDbRepository>();
         }
 

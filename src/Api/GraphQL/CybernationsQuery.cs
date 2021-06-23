@@ -40,7 +40,11 @@ namespace Api.GraphQL
                     new QueryArgument<IntGraphType> { Name = "limit" },
                     new QueryArgument<IntGraphType> { Name = "offset" }),
                 resolve: QueryAlliancesByFilter);
+
+            Field<WarType>("getWar", arguments: new QueryArguments(new QueryArgument<IdGraphType> { Name = "warId" }), resolve: QueryWarById);
         }
+
+        #region Nation Resolvers
 
         public object QueryNationById(IResolveFieldContext<object> context)
         {
@@ -57,6 +61,10 @@ namespace Api.GraphQL
             return _cnDbRepository.Nations.Search(filter, orderBy, limit, offset);
         }
 
+        #endregion
+
+        #region Alliance Resolvers
+
         public object QueryAllianceById(IResolveFieldContext<object> context)
         {
             var id = context.GetArgument<int?>("allianceId");
@@ -71,5 +79,17 @@ namespace Api.GraphQL
             var offset = context.GetArgument<int?>("offset");
             return _cnDbRepository.Alliances.Search(filter, orderBy, limit, offset);
         }
+
+        #endregion
+
+        #region War Resolvers
+
+        public object QueryWarById(IResolveFieldContext<object> context)
+        {
+            var id = context.GetArgument<int?>("warId");
+            return id.HasValue ? _cnDbRepository.Wars.Get(id.Value) : Task.FromResult<War>(null);
+        }
+
+        #endregion
     }
 }

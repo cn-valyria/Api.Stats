@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Valyria.Models;
-
-namespace Repository
+﻿namespace Repository
 {
     public class CnDbRepository : ICnDbRepository
     {
         public INationDataHandler Nations { get; }
         public IAllianceDataHelper Alliances { get; }
+        public IWarDataHandler Wars { get; }
 
         public CnDbRepository(
             INationDataHandler nationDataHandler,
-            IAllianceDataHelper allianceDataHandler)
+            IAllianceDataHelper allianceDataHandler,
+            IWarDataHandler warDataHandler)
         {
             Nations = nationDataHandler;
             Alliances = allianceDataHandler;
+            Wars = warDataHandler;
         }
     }
 }
