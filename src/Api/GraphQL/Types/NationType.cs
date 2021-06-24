@@ -58,7 +58,7 @@ namespace Api.GraphQL.Types
 
         private object GetAllianceByNation(IResolveFieldContext<Nation> context)
         {
-            var dataLoader = _dataLoaderContextAccessor.Context.GetOrAddBatchLoader<int, Alliance>("GetAlliancesByIds", async allianceIds =>
+            var dataLoader = _dataLoaderContextAccessor.Context.GetOrAddBatchLoader<int, Alliance>("GetAlliancesForNationByIds", async allianceIds =>
             {
                 var allAlliances = await _cnDbRepository.Alliances.Get(allianceIds);
                 return allAlliances.ToDictionary(alliance => alliance.Id, alliance => alliance);
