@@ -25,7 +25,7 @@ namespace Api.GraphQL
             Field<NationSearchResultsType>(
                 "searchNations",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<FilterInputType>> { Name = "filter" },
+                    new QueryArgument<NonNullGraphType<NationFilterInputType>> { Name = "filter" },
                     new QueryArgument<NationOrderByInputType> { Name = "orderBy" },
                     new QueryArgument<IntGraphType> { Name = "limit" },
                     new QueryArgument<IntGraphType> { Name = "offset" }),
@@ -35,13 +35,21 @@ namespace Api.GraphQL
             Field<AllianceSearchResultsType>(
                 "searchAlliances",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<FilterInputType>> { Name = "filter" },
+                    new QueryArgument<NonNullGraphType<AllianceFilterInputType>> { Name = "filter" },
                     new QueryArgument<AllianceOrderByInput> { Name = "orderBy" },
                     new QueryArgument<IntGraphType> { Name = "limit" },
                     new QueryArgument<IntGraphType> { Name = "offset" }),
                 resolve: QueryAlliancesByFilter);
 
             Field<WarType>("getWar", arguments: new QueryArguments(new QueryArgument<IdGraphType> { Name = "warId" }), resolve: QueryWarById);
+            Field<WarSearchResultsType>(
+                "searchWars",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<WarFilterInputType>> { Name = "filter" },
+                    new QueryArgument<WarOrderByInputType> { Name = "orderBy" },
+                    new QueryArgument<IntGraphType> { Name = "limit" },
+                    new QueryArgument<IntGraphType> { Name = "offset" }),
+                resolve: QueryWarsByFilter);
         }
 
         #region Nation Resolvers
@@ -54,7 +62,7 @@ namespace Api.GraphQL
 
         public object QueryNationsByFilter(IResolveFieldContext<object> context)
         {
-            var filter = context.GetArgument<SearchFilter>("filter");
+            var filter = context.GetArgument<NationSearchFilter>("filter");
             var orderBy = context.GetArgument<Dictionary<string, object>>("orderBy");
             var limit = context.GetArgument<int?>("limit");
             var offset = context.GetArgument<int?>("offset");
@@ -73,7 +81,7 @@ namespace Api.GraphQL
 
         public object QueryAlliancesByFilter(IResolveFieldContext<object> context)
         {
-            var filter = context.GetArgument<SearchFilter>("filter");
+            var filter = context.GetArgument<AllianceSearchFilter>("filter");
             var orderBy = context.GetArgument<Dictionary<string, object>>("orderBy");
             var limit = context.GetArgument<int?>("limit");
             var offset = context.GetArgument<int?>("offset");
@@ -88,6 +96,15 @@ namespace Api.GraphQL
         {
             var id = context.GetArgument<int?>("warId");
             return id.HasValue ? _cnDbRepository.Wars.Get(id.Value) : Task.FromResult<War>(null);
+        }
+
+        public object QueryWarsByFilter(IResolveFieldContext<object> context)
+        {
+            var filter = context.GetArgument<WarSearchFilter>("filter");
+            var orderBy = context.GetArgument<Dictionary<string, object>>("orderBy");
+            var limit = context.GetArgument<int?>("limit");
+            var offset = context.GetArgument<int?>("offset");
+            return _cnDbRepository.Wars.Search(filter, orderBy, limit, offset);
         }
 
         #endregion

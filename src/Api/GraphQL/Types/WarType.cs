@@ -44,8 +44,8 @@ namespace Api.GraphQL.Types
             Field<DecimalGraphType>(nameof(War.DefendingDestruction), "The amount of destruction (aka damage) inflicted against the defender");
 
             Field<WarStatusEnum>(nameof(War.WarStatus), "The current status of the war");
-            Field<DateTimeGraphType>(nameof(War.BeginDate), "The exact date and time that the war was declared");
-            Field<DateTimeGraphType>(nameof(War.EndDate), "The date that the war should expire after");
+            Field<DateTimeGraphType>(nameof(War.DeclaredOn), "The exact date and time that the war was declared");
+            Field<DateTimeGraphType>(nameof(War.ExpiresOn), "The date that the war should expire after");
             Field(w => w.Reason).Description("The reason given by the player declaring the war for why they declared war");
         }
 

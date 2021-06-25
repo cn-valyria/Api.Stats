@@ -26,5 +26,6 @@ namespace Repository.DataAccessLayer.QueryHelpers
 
         public static OrderByClause DefaultNationOrderBy => new OrderByClause("Strength", "DESC");
         public static OrderByClause DefaultAllianceOrderBy => new OrderByClause("Score", "DESC");
+        public static OrderByClause DefaultWarOrderBy => new OrderByClause("BeginDate", "DESC");
     }
 }

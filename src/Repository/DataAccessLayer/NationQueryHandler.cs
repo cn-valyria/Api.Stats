@@ -85,17 +85,21 @@ where   id in @ids";
 
         public async Task<(int, IEnumerable<Nation>)> Query(SearchFilter filter, IEnumerable<OrderByClause> orderBy, int limit, int offset)
         {
+            // Sanity check that the correct search filter is used for this query
+            if (!(filter is NationSearchFilter nationSearchFilter))
+                throw new ArgumentException(nameof(filter));
+
             using var sqlConnection = new MySqlConnection(_connectionString);
 
             // Call the main proc to execute the search
             await sqlConnection.ExecuteAsync("search_nations", new
             {
-                _nation_name = filter.NationName,
-                _ruler_name = filter.RulerName,
-                _alliance_name = filter.AllianceName,
-                _nation_strength_lower_bound = filter.NationStrengthLowerBound,
-                _nation_strength_upper_bound = filter.NationStrengthUpperBound,
-                _match_type = (int)(filter.Match ?? FilterMatchType.Any)
+                _nation_name = nationSearchFilter.NationName,
+                _ruler_name = nationSearchFilter.RulerName,
+                _alliance_name = nationSearchFilter.AllianceName,
+                _nation_strength_lower_bound = nationSearchFilter.NationStrengthLowerBound,
+                _nation_strength_upper_bound = nationSearchFilter.NationStrengthUpperBound,
+                _match_type = (int)(nationSearchFilter.Match ?? FilterMatchType.Any)
             }, commandType: CommandType.StoredProcedure);
 
             // Count all data that could be returned from the search results

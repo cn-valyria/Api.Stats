@@ -17,8 +17,8 @@ namespace Valyria.Models
         public Team DefendingTeam { get; set; }
         public decimal DefendingDestruction { get; set; }
         public WarStatus WarStatus { get; set; }
-        public DateTime BeginDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime DeclaredOn { get; set; }
+        public DateTime ExpiresOn { get; set; }
         public string Reason { get; set; }
     }
 }
