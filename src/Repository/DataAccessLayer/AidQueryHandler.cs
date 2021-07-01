@@ -3,7 +3,10 @@ using MySql.Data.MySqlClient;
 using Repository.DataAccessLayer.DTO;
 using Repository.DataAccessLayer.QueryHelpers;
 using Repository.Models;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repository.DataAccessLayer
@@ -64,9 +67,41 @@ where id in @ids";
             return await sqlConnection.QueryAsync<Aid>(query, new { ids });
         }
 
-        public Task<(int, IEnumerable<Aid>)> Query(SearchFilter filter, IEnumerable<OrderByClause> orderBy, int limit, int offset)
+        public async Task<(int, IEnumerable<Aid>)> Query(SearchFilter filter, IEnumerable<OrderByClause> orderBy, int limit, int offset)
         {
-            throw new System.NotImplementedException();
+            // Sanity check that the correct search filter is used for this query
+            if (!(filter is AidSearchFilter aidSearchFilter))
+                throw new ArgumentException(nameof(filter));
+
+            using var sqlConnection = new MySqlConnection(_connectionString);
+
+            // Call the main proc to execute the search
+            await sqlConnection.ExecuteAsync("search_aid", new
+            {
+                _sending_nation = aidSearchFilter.SendingNation,
+                _sending_ruler = aidSearchFilter.SendingRuler,
+                _sending_alliance = aidSearchFilter.SendingAlliance,
+                _receiving_nation = aidSearchFilter.ReceivingNation,
+                _receiving_ruler = aidSearchFilter.ReceivingRuler,
+                _receiving_alliance = aidSearchFilter.ReceivingAlliance,
+                _sent_earlier_than = aidSearchFilter.SentEarlierThan,
+                _sent_later_than = aidSearchFilter.SentLaterThan,
+                _match_type = (int)(aidSearchFilter.Match ?? FilterMatchType.Any)
+            }, commandType: CommandType.StoredProcedure);
+
+            // Count all data that could be returned from the search results
+            const string totalCountQuery = "select count(1) from tmpAidSearchResults";
+            var totalCount = await sqlConnection.QueryFirstAsync<int>(totalCountQuery);
+
+            // Grab the data in the temp table that the proc should have populated and return that
+            var resultsQuery = $@"
+select * 
+from tmpAidSearchResults 
+order by {string.Join(", ", orderBy.Select(clause => $"{clause.ColumnName} {clause.SortOrder}"))}
+limit @offset, @limit";
+            var searchResults = await sqlConnection.QueryAsync<Aid>(resultsQuery, new { limit, offset });
+
+            return (totalCount, searchResults);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Repository.DataAccessLayer;
+using Repository.DataAccessLayer.QueryHelpers;
 using Repository.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,9 +35,26 @@ namespace Repository
             throw new System.NotImplementedException();
         }
 
-        public Task<SearchResult<Aid>> Search(SearchFilter filter, Dictionary<string, object> orderBy, int? limit = null, int? offset = null)
+        public async Task<SearchResult<Aid>> Search(SearchFilter filter, Dictionary<string, object> orderBy, int? limit = null, int? offset = null)
         {
-            throw new System.NotImplementedException();
+            // Map order by clause dictionary to actual clauses, and check for fields with different names than their respective DB column
+            var dataOrderBy = orderBy?.Keys.Select(key => key.ToLower() switch
+            {
+                "sentOn" => new OrderByClause("Date", orderBy[key]),
+                _ => new OrderByClause(key, orderBy[key])
+            }).ToList() ?? new List<OrderByClause>();
+
+            // Sanity check that at least some default ordering is used if not provided
+            if (!dataOrderBy.Any())
+                dataOrderBy.Add(OrderByClause.DefaultAidOrderBy);
+
+            // Get the results (plus total possible query result count) and return
+            var (totalCount, searchResults) = await _aidQueryHandler.Query(filter, dataOrderBy, limit ?? 100, offset ?? 0);
+            return new SearchResult<Aid>
+            {
+                TotalCount = totalCount,
+                Results = searchResults.Select(_mapper.Map<Aid>).ToList()
+            };
         }
     }
 }

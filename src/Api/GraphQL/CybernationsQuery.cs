@@ -52,6 +52,14 @@ namespace Api.GraphQL
                 resolve: QueryWarsByFilter);
 
             Field<AidType>("getAid", arguments: new QueryArguments(new QueryArgument<IdGraphType> { Name = "aidId" }), resolve: QueryAidById);
+            Field<AidSearchResultsType>(
+                "searchAid",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<AidFilterInputType>> { Name = "filter" },
+                    new QueryArgument<AidOrderByInputType> { Name = "orderBy" },
+                    new QueryArgument<IntGraphType> { Name = "limit" },
+                    new QueryArgument<IntGraphType> { Name = "offset" }),
+                resolve: QueryAidByFilter);
         }
 
         #region Nation Resolvers
@@ -117,6 +125,15 @@ namespace Api.GraphQL
         {
             var id = context.GetArgument<int?>("aidId");
             return id.HasValue ? _cnDbRepository.Aid.Get(id.Value) : Task.FromResult<Aid>(null);
+        }
+
+        public object QueryAidByFilter(IResolveFieldContext<object> context)
+        {
+            var filter = context.GetArgument<AidSearchFilter>("filter");
+            var orderBy = context.GetArgument<Dictionary<string, object>>("orderBy");
+            var limit = context.GetArgument<int?>("limit");
+            var offset = context.GetArgument<int?>("offset");
+            return _cnDbRepository.Aid.Search(filter, orderBy, limit, offset);
         }
 
         #endregion
