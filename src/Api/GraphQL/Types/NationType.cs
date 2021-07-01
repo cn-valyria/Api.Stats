@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Api.GraphQL.Helpers;
+using AutoMapper;
 using GraphQL;
 using GraphQL.DataLoader;
 using GraphQL.Types;
@@ -57,15 +58,7 @@ namespace Api.GraphQL.Types
         }
 
         private object GetAllianceByNation(IResolveFieldContext<Nation> context)
-        {
-            var dataLoader = _dataLoaderContextAccessor.Context.GetOrAddBatchLoader<int, Alliance>("GetAlliancesForNationByIds", async allianceIds =>
-            {
-                var allAlliances = await _cnDbRepository.Alliances.Get(allianceIds);
-                return allAlliances.ToDictionary(alliance => alliance.Id, alliance => alliance);
-            });
-
-            return dataLoader.LoadAsync(context.Source.Alliance?.Id ?? 0);
-        }
+            => _dataLoaderContextAccessor.GetAllianceById(context.Source.Alliance?.Id ?? 0, "GetAlliancesForNationByIds", _cnDbRepository);
 
         private object GetNationAuditHistory(IResolveFieldContext<Nation> context) => _cnDbRepository.Nations.GetAuditHistory(context.Source.Id);
     }

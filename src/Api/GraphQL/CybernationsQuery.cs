@@ -50,6 +50,8 @@ namespace Api.GraphQL
                     new QueryArgument<IntGraphType> { Name = "limit" },
                     new QueryArgument<IntGraphType> { Name = "offset" }),
                 resolve: QueryWarsByFilter);
+
+            Field<AidType>("getAid", arguments: new QueryArguments(new QueryArgument<IdGraphType> { Name = "aidId" }), resolve: QueryAidById);
         }
 
         #region Nation Resolvers
@@ -105,6 +107,16 @@ namespace Api.GraphQL
             var limit = context.GetArgument<int?>("limit");
             var offset = context.GetArgument<int?>("offset");
             return _cnDbRepository.Wars.Search(filter, orderBy, limit, offset);
+        }
+
+        #endregion
+
+        #region Aid Resolvers
+
+        public object QueryAidById(IResolveFieldContext<object> context)
+        {
+            var id = context.GetArgument<int?>("aidId");
+            return id.HasValue ? _cnDbRepository.Aid.Get(id.Value) : Task.FromResult<Aid>(null);
         }
 
         #endregion

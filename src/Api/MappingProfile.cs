@@ -3,6 +3,7 @@ using Valyria.Models;
 using DbNation = Repository.DataAccessLayer.DTO.Nation;
 using DbAlliance = Repository.DataAccessLayer.DTO.Alliance;
 using DbWar = Repository.DataAccessLayer.DTO.War;
+using DbAid = Repository.DataAccessLayer.DTO.Aid;
 
 namespace Api
 {
@@ -56,6 +57,14 @@ namespace Api
                     return src.Destruction * (realAttackingPercent / 100m);
                 }))
                 .ForMember(dest => dest.DefendingDestruction, opt => opt.MapFrom(src => src.Destruction * (src.DefendPercent / 100m)));
+
+            CreateMap<DbAid, Aid>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AidId))
+                .ForMember(dest => dest.SendingNation, opt => opt.MapFrom(src => new Nation { Id = src.SendingNationId }))
+                .ForMember(dest => dest.SendingAlliance, opt => opt.MapFrom(src => src.SendingAllianceId == 0 ? null : new Alliance { Id = src.SendingAllianceId }))
+                .ForMember(dest => dest.ReceivingNation, opt => opt.MapFrom(src => new Nation { Id = src.ReceivingNationId }))
+                .ForMember(dest => dest.ReceivingAlliance, opt => opt.MapFrom(src => src.ReceivingAllianceId == 0 ? null : new Alliance { Id = src.ReceivingAllianceId }))
+                .ForMember(dest => dest.SentOn, opt => opt.MapFrom(src => src.Date));
         }
     }
 }

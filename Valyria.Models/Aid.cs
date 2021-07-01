@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Valyria.Models.Enums;
 
 namespace Valyria.Models
@@ -18,7 +16,7 @@ namespace Valyria.Models
         public int Money { get; set; }
         public int Technology { get; set; }
         public int Soldiers { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime SentOn { get; set; }
         public string Reason { get; set; }
     }
 }

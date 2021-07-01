@@ -11,6 +11,7 @@ using Repository.DataAccessLayer;
 using DbNation = Repository.DataAccessLayer.DTO.Nation;
 using DbAlliance = Repository.DataAccessLayer.DTO.Alliance;
 using DbWar = Repository.DataAccessLayer.DTO.War;
+using DbAid = Repository.DataAccessLayer.DTO.Aid;
 
 [assembly: FunctionsStartup(typeof(Api.Startup))]
 
@@ -39,16 +40,19 @@ namespace Api
             var nationQueryHandler = new NationQueryHandler(cnDbConnectionString);
             var allianceQueryHandler = new AllianceQueryHandler(cnDbConnectionString);
             var warQueryHandler = new WarQueryHandler(cnDbConnectionString);
+            var aidQueryHandler = new AidQueryHandler(cnDbConnectionString);
 
             return services
                 .AddSingleton<IQueryHandler<DbNation>>(nationQueryHandler)
                 .AddSingleton<IQueryHandler<DbAlliance>>(allianceQueryHandler)
                 .AddSingleton<IQueryHandler<DbWar>>(warQueryHandler)
+                .AddSingleton<IQueryHandler<DbAid>>(aidQueryHandler)
                 .AddSingleton<IAuditQueryHandler<DbNation>>(nationQueryHandler)
                 .AddSingleton<IAuditQueryHandler<DbAlliance>>(allianceQueryHandler)
                 .AddSingleton<INationDataHandler, NationDataHandler>()
                 .AddSingleton<IAllianceDataHelper, AllianceDataHandler>()
                 .AddSingleton<IWarDataHandler, WarDataHandler>()
+                .AddSingleton<IAidDataHandler, AidDataHandler>()
                 .AddSingleton<ICnDbRepository, CnDbRepository>();
         }
 

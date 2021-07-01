@@ -1,4 +1,4 @@
-﻿using GraphQL;
+﻿using Api.GraphQL.Helpers;
 using GraphQL.DataLoader;
 using GraphQL.Types;
 using Repository;
@@ -23,8 +23,8 @@ namespace Api.GraphQL.Types
             Field(w => w.Id).Description("The unique identifier of this war");
             Field<NationType>(
                 nameof(War.AttackingNation), 
-                "The nation that declared war", resolve: 
-                context => GetNationById(context.Source.AttackingNation.Id));
+                "The nation that declared war", 
+                resolve: context => GetNationById(context.Source.AttackingNation.Id));
             Field<AllianceType>(
                 nameof(War.AttackingAlliance), 
                 "The alliance that the nation was in when it declared war",
@@ -50,25 +50,9 @@ namespace Api.GraphQL.Types
         }
 
         private object GetNationById(int nationId)
-        {
-            var dataLoader = _dataLoaderContextAccessor.Context.GetOrAddBatchLoader<int, Nation>("GetNationsForWarByIds", async nationIds =>
-            {
-                var allNations = await _cnDbRepository.Nations.Get(nationIds);
-                return allNations.ToDictionary(nation => nation.Id, nation => nation);
-            });
+            => _dataLoaderContextAccessor.GetNationById(nationId, "GetNationsForWarByIds", _cnDbRepository);
 
-            return dataLoader.LoadAsync(nationId);
-        }
-
-        private object GetAllianceById(int allianceId)
-        {
-            var dataLoader = _dataLoaderContextAccessor.Context.GetOrAddBatchLoader<int, Alliance>("GetAlliancesForWarByIds", async allianceIds =>
-            {
-                var allAlliances = await _cnDbRepository.Alliances.Get(allianceIds);
-                return allAlliances.ToDictionary(alliance => alliance.Id, alliance => alliance);
-            });
-
-            return dataLoader.LoadAsync(allianceId);
-        }
+        private object GetAllianceById(int allianceId) 
+            => _dataLoaderContextAccessor.GetAllianceById(allianceId, "GetAlliancesForWarByIds", _cnDbRepository);
     }
 }

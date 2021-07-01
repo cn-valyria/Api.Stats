@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Valyria.Models;
-
-namespace Repository
+﻿namespace Repository
 {
     public interface ICnDbRepository
     {
@@ -21,5 +16,10 @@ namespace Repository
         /// A handler that exposes access methods to all war data currently known to our CN data repository
         /// </summary>
         IWarDataHandler Wars { get; }
+
+        /// <summary>
+        /// A handler that exposes access methods to all war data currently known to our CN data repository
+        /// </summary>
+        IAidDataHandler Aid { get; }
     }
 }
