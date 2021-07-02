@@ -9,7 +9,7 @@ on:
     - master
 
 env:
-  AZURE_FUNCTIONAPP_NAME: braavos-tech-exchange
+  AZURE_FUNCTIONAPP_NAME: valyria-api-stats
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'build'
   DOTNET_VERSION: '3.1.300'
 
